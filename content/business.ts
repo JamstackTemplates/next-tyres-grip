@@ -1,35 +1,31 @@
-// Neutral starter content. Replace with the owner's real details or a template's fictitious brief.
-export interface Business {
-  /** Public display name; also update site.config.json's name when renaming. */
-  name: string;
-  /** Short headline for the home page. */
-  tagline: string;
-  /** Plain-text introduction used by the page and fallback metadata. */
-  introduction: string;
-  /** Public contact address, never a private notification destination. */
-  email: string;
-  /** Public number; blank hides it. */
-  phone: string;
-  /** Contact copy; the hosted form supports name, email and message only. */
-  enquiries: {
-    /** Contact page heading. */
-    title: string;
-    /** No booking, payment or delivery promises. */
-    introduction: string;
-    /** Suggestions for the message, not additional form inputs. */
-    usefulToInclude: string[];
-  };
-}
+import { DAYS, type OpeningHours } from '../lib/hours.ts';
 
-export const business: Business = {
-  name: 'Jamstacks starter',
-  tagline: 'A foundation for your next website.',
-  introduction: 'Replace this neutral content with the business story, services and details that matter to its visitors.',
-  email: 'hello@example.com',
-  phone: '',
+/** Same-day local opening hours, inclusive at opening and exclusive at closing. */
+const hours: OpeningHours[] = DAYS.map(day => {
+  if (day === 'Sunday') return { day };
+  if (day === 'Saturday') return { day, opens: '08:00', closes: '13:00' };
+  return { day, opens: '07:30', closes: '17:30' };
+});
+
+export const business = {
+  name: 'Roadgrip Tyres & Wheels',
+  wordmark: 'Roadgrip',
+  descriptor: 'Tyres & Wheels',
+  tagline: 'Grip you can trust. Fitted today.',
+  introduction: 'Six tyre brands on the rack, a laser alignment bay and a crew that checks your pressures before you leave. From a single puncture to a 40-van fleet.',
+  email: 'fitting@roadgriptyres.example',
+  phone: '(03) 7010 0418',
+  address: { street: '88 Racecourse Road', suburb: 'Flemington', region: 'VIC', postcode: '3031', country: 'Australia' },
+  landmark: 'Five minutes from Flemington Racecourse, opposite the Newmarket tram stop on Route 57.',
+  areaServed: 'Inner-north and western Melbourne',
+  hours,
+  driveInNote: 'Drive-ins welcome for punctures. Book-ins come first for alignments and full sets.',
   enquiries: {
-    title: 'Get in touch',
-    introduction: 'Send a question or enquiry. Arrangements are confirmed only when the business replies.',
-    usefulToInclude: ['What you would like to discuss', 'Any relevant dates or details'],
+    confirmation: 'We’ll reply with a quote and available times. Your book-in is confirmed only when we reply.',
   },
 };
+
+export const phoneHref = `tel:+61${business.phone.replace(/\D/g, '').replace(/^0/, '')}`;
+export const emailHref = `mailto:${business.email}`;
+export const locality = `${business.address.suburb} ${business.address.region} ${business.address.postcode}`;
+export const fullAddress = `${business.address.street}, ${locality}, ${business.address.country}`;

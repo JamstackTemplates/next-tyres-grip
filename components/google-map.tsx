@@ -1,9 +1,15 @@
 import { mapEmbedUrl } from '../lib/maps';
+import { Icon } from './workshop-art';
 
-/** Optional location component. Pass the formatted address from content; never embed a secret key. */
+/** Pass a formatted address. The embed uses no secret key. */
 export function GoogleMap({ address, title, className = '' }: {
   address: string; title: string; className?: string;
 }) {
-  return <div className={`map ${className}`}><iframe src={mapEmbedUrl(address)} title={title}
-    loading="lazy" referrerPolicy="no-referrer-when-downgrade" allowFullScreen /></div>;
+  return <div className={`map ${className}`}>
+    <div className="map-placeholder" aria-hidden="true">
+      <Icon name="pin" /><p>{address}</p>
+    </div>
+    <iframe src={mapEmbedUrl(address)} title={title} loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade" allowFullScreen />
+  </div>;
 }

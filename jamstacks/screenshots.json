@@ -1,0 +1,22 @@
+{
+  "templateId": "next-tyres-grip",
+  "viewport": {
+    "width": 1440,
+    "height": 900
+  },
+  "fullPage": false,
+  "captures": [
+    {
+      "mode": "light",
+      "sha256": "1b7fd2ad8d6a4c1e08e79967383e101011dcf6cfe6d84961b4472f23c6c5ee08",
+      "file": "jamstacks/home-light.jpg",
+      "bytes": 163545
+    },
+    {
+      "mode": "dark",
+      "sha256": "b7da5010f1613ca9efb6b4225995c6feb6b4382157105da762482d9fc9f4bf01",
+      "file": "jamstacks/home-dark.jpg",
+      "bytes": 153347
+    }
+  ]
+}

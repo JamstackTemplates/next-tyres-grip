@@ -1,0 +1,19 @@
+{
+  "name": "Roadgrip Tyres & Wheels",
+  "description": "A bold rubber-black and sidewall-red theme for tyre and wheel shops: a giant sidewall hero with raised lettering, an interactive tyre-size decoder, tyre ranges on a fitting-bay rack, an alloy wheel wall, alignment and balancing prices on a workshop job docket, fleet account tiers, live open-now hours and a Jamstacks contact component for quote and fleet enquiries.",
+  "tech": "next",
+  "type": "tyres",
+  "style": "grip",
+  "internal": false,
+  "components": [
+    "support-form"
+  ],
+  "configFile": "site.config.json",
+  "screenshots": {
+    "light": "jamstacks/home-light.jpg",
+    "dark": "jamstacks/home-dark.jpg",
+    "theme": {
+      "strategy": "media"
+    }
+  }
+}

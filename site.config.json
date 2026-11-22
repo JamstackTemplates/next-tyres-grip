@@ -1,7 +1,8 @@
 {
-  "name": "Jamstacks starter",
-  "description": "A neutral Next.js foundation for Jamstacks websites.",
-  "domain": "",
+  "name": "Roadgrip Tyres & Wheels",
+  "description": "Roadgrip Tyres & Wheels in Flemington, Melbourne: six tyre brands fitted and balanced, alloy wheels, four-wheel alignment, puncture repair and fleet tyre accounts.",
+  "domain": "next-tyres-grip.jamstacks.net",
+  "timeZone": "Australia/Melbourne",
   "jamstacks": {
     "siteId": "",
     "cdnUrl": "https://cdn.jamstacks.net"

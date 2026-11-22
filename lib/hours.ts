@@ -23,19 +23,26 @@ export function validateHours(hours: readonly OpeningHours[]): void {
   }
   if (hours.length !== 7) throw new Error('hours: expected seven weekdays');
 }
-/** Browser callers supply the clock; build/static views never compute current availability. */
-export function openingLabel(hours: readonly OpeningHours[], timeZone: string, now = new Date()): string {
-  const fallback = 'See opening hours';
-  if (!timeZone) return fallback;
-  validateHours(hours);
-  let parts: Intl.DateTimeFormatPart[];
+function workshopClock(timeZone: string, now: Date) {
+  if (!timeZone) return undefined;
   try {
-    parts = new Intl.DateTimeFormat('en-US', { timeZone, weekday: 'long', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' }).formatToParts(now);
-  } catch { return fallback; }
-  const part = (type: string) => parts.find(entry => entry.type === type)?.value ?? '';
-  const index = DAYS.indexOf(part('weekday') as Day);
-  if (index < 0) return fallback;
-  const current = Number(part('hour')) * 60 + Number(part('minute'));
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone, weekday: 'long', hour: 'numeric', minute: 'numeric', hourCycle: 'h23',
+    }).formatToParts(now);
+    const part = (type: string) => parts.find(entry => entry.type === type)?.value ?? '';
+    const dayIndex = DAYS.indexOf(part('weekday') as Day);
+    return dayIndex < 0 ? undefined : { dayIndex, current: Number(part('hour')) * 60 + Number(part('minute')) };
+  } catch {
+    return undefined;
+  }
+}
+
+/** Browser callers supply the clock. Static views use neutralHoursLabel instead. */
+export function openingLabel(hours: readonly OpeningHours[], timeZone: string, now = new Date()): string {
+  const time = workshopClock(timeZone, now);
+  if (!time) return 'See opening hours';
+  validateHours(hours);
+  const { dayIndex: index, current } = time;
   const today = hours.find(entry => entry.day === DAYS[index])!;
   if (today.opens && today.closes && current >= minutes(today.opens) && current < minutes(today.closes)) return `Open now · until ${today.closes}`;
   for (let offset = 0; offset <= 7; offset++) {
@@ -44,4 +51,39 @@ export function openingLabel(hours: readonly OpeningHours[], timeZone: string, n
     if (entry.opens && (offset > 0 || current < minutes(entry.opens))) return `Closed · opens ${offset === 0 ? 'today' : day} at ${entry.opens}`;
   }
   return 'Closed · see opening hours';
+}
+
+/** Consecutive days with the same schedule share a row and a static badge label. */
+export function hoursGroups(hours: readonly OpeningHours[]) {
+  const groups: { first: Day; last: Day; opens?: string; closes?: string }[] = [];
+  for (const day of DAYS) {
+    const entry = hours.find(value => value.day === day);
+    if (!entry) continue;
+    const prev = groups.at(-1);
+    if (prev && prev.opens === entry.opens && prev.closes === entry.closes) prev.last = day;
+    else groups.push({ first: day, last: day, opens: entry.opens, closes: entry.closes });
+  }
+  return groups;
+}
+
+export function shortDayRange(first: Day, last: Day) {
+  return first === last ? first.slice(0, 3) : `${first.slice(0, 3)}–${last.slice(0, 3)}`;
+}
+
+export function compactTime(value: string) {
+  const [hour, minute] = value.split(':').map(Number);
+  return `${hour % 12 || 12}${minute ? `:${String(minute).padStart(2, '0')}` : ''}`;
+}
+
+export function neutralHoursLabel(hours: readonly OpeningHours[]) {
+  const open = hoursGroups(hours).flatMap(({ first, last, opens, closes }) =>
+    opens && closes ? [`${shortDayRange(first, last)} ${compactTime(opens)}–${compactTime(closes)}`] : []);
+  return open.length ? `Hours: ${open.join(', ')}` : 'See opening hours';
+}
+
+export function todayHoursLabel(hours: readonly OpeningHours[], timeZone: string, now = new Date()): string {
+  const time = workshopClock(timeZone, now);
+  if (!time) return neutralHoursLabel(hours);
+  const today = hours.find(entry => entry.day === DAYS[time.dayIndex]);
+  return today?.opens && today.closes ? `Today ${today.opens}–${today.closes}` : 'Closed today';
 }

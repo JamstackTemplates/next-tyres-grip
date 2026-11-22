@@ -72,3 +72,16 @@ and Pages never import/read it. Keep site.config.json, the form and workflow out
 light/dark captures after a fresh normal build and run node --test jamstacks/config.test.mjs separately.
 Each new template needs its own business-led layout/fonts/art and OG image; do not ship the neutral
 starter as a final design. Remove `plan/` and `.claude/skills/` before publishing a gallery template once reviewed.
+
+## Roadgrip file ownership
+
+- `app/page.tsx` and `app/<route>/page.tsx` own each page's copy, actions and section order.
+- `content/business.ts` owns workshop details, address, hours and enquiry wording.
+- `content/brands.ts`, `tyres.ts`, `wheels.ts`, `services.ts`, `fleet.ts` and `sidewall.ts` own the
+  workshop catalogue and decoder specifications. Stock and prices are editable there. The Home
+  price comes from the lowest in-stock tyre. `tests/content.test.ts` checks the catalogue,
+  and `tests/hours.test.ts` validates the editable local schedule.
+- `components/workshop-art.tsx` owns the shared inline workshop artwork.
+  `app/tailwind.input.css` owns theme tokens, font mappings and the workshop surfaces.
+- `lib/structured-data.ts` derives the TireShop record from workshop details, hours and services.
+  `lib/metadata.ts` and `app/sitemap.ts` own the shared public metadata and route inventory.

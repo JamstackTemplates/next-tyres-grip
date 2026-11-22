@@ -1,20 +1,21 @@
 import type { ReactNode } from 'react';
+import { ChalkRule } from './workshop';
+import { Sidewall, TreadBand } from './workshop-art';
 
-/** Heading block for inner pages: eyebrow, large title (use <em> for the accent words) and a lede. */
-export function PageHead({ eyebrow, title, children, id, before }: {
+export function PageHead({ eyebrow, title, children, dark = false }: {
   eyebrow: string;
   title: ReactNode;
   children?: ReactNode;
-  id?: string;
-  /** Optional illustration above the eyebrow. */
-  before?: ReactNode;
+  dark?: boolean;
 }) {
-  return (
-    <header className="wrap pt-[clamp(2.5rem,6vw,4.5rem)] pb-[clamp(1.5rem,3vw,2.5rem)]">
-      {before}
-      <p className="eyebrow">{eyebrow}</p>
-      <h1 id={id} className="mt-3 mb-5 max-w-[18ch] text-[clamp(2.6rem,6.5vw,4.6rem)]">{title}</h1>
-      {children ? <div className="max-w-(--measure) text-[clamp(1.08rem,1.6vw,1.22rem)] text-muted">{children}</div> : null}
-    </header>
-  );
+  return <header className={`relative isolate overflow-hidden border-b border-line ${dark ? 'rubber' : 'concrete'}`}>
+    <div className="page-head-art -z-10"><Sidewall /></div>
+    <div className="wrap py-10 md:py-16 lg:py-20"><div className="page-head-copy">
+      <p className={`eyebrow mb-4 ${dark ? 'text-[#d8d7cf]' : 'text-accent-ink'}`}>{eyebrow}</p>
+      <h1 className="mb-4 max-w-[17ch] text-[clamp(1.82rem,5.4vw,4.6rem)] leading-[1.16]">{title}</h1>
+      <ChalkRule />
+      {children && <div className={`mt-4 max-w-[50ch] text-lg ${dark ? 'text-[#dfdfd8]' : 'text-muted'}`}>{children}</div>}
+    </div></div>
+    {dark && <TreadBand className="!h-2.5" />}
+  </header>;
 }
